@@ -1,0 +1,81 @@
+Задание 3:
+Найдите номер модели, объем памяти и размеры экранов ПК-блокнотов, цена которых превышает 1000 дол.
+Решение:
+SELECT model, ram, screen
+FROM laptop
+WHERE price>1000
+
+Задание 4: 
+Найдите все записи таблицы Printer для цветных принтеров.
+Решение:
+SELECT * 
+FROM printer
+WHERE color='y'
+
+Задание 5:
+Найдите номер модели, скорость и размер жесткого диска ПК, имеющих 12x или 24x CD и цену менее 600 дол.
+Решение:
+1) SELECT model, speed, hd
+FROM pc
+WHERE
+(cd='12x' 
+OR cd='24x')
+AND price<600
+2) SELECT model, speed, hd
+FROM pc
+WHERE cd IN ('12x', '24x')
+AND price<600
+
+Задание 6: 
+Для каждого производителя, выпускающего ПК-блокноты c объёмом жесткого диска не менее 10 Гбайт, найти скорости таких ПК-блокнотов. Вывод: производитель, скорость.
+Решение:
+SELECT DISTINCT maker, speed
+FROM product JOIN laptop 
+ON product.model=laptop.model 
+WHERE type='laptop'
+AND hd>=10
+
+Задание 7:
+Найдите номера моделей и цены всех имеющихся в продаже продуктов (любого типа) производителя B (латинская буква).
+Решение:
+SELECT laptop.model, price
+FROM product JOIN laptop ON product.model=laptop.model 
+WHERE maker='B'
+UNION 
+SELECT pc.model, price
+FROM product JOIN pc ON product.model=pc.model
+WHERE maker='B'
+UNION
+SELECT printer.model, price
+FROM product JOIN printer ON product.model=printer.model
+WHERE maker='B'
+
+*вероятно, можно было проще, но вариант прошел, значит, это победа:)
+
+Задание 8:
+Найдите производителя, выпускающего ПК, но не ПК-блокноты.
+Решение:
+SELECT maker 
+FROM product
+WHERE type='pc'
+EXCEPT
+SELECT maker 
+FROM product
+WHERE type='laptop'
+
+Задание 9:
+Найдите производителей ПК с процессором не менее 450 Мгц. Вывести: Maker.
+Решение:
+SELECT DISTINCT maker
+FROM product JOIN pc ON product.model=pc.model 
+WHERE type='pc'
+AND speed>=450
+
+Задание 10:
+Найдите модели принтеров, имеющих самую высокую цену. Вывести: model, price
+Решение:
+SELECT DISTINCT model, price
+FROM printer
+WHERE price=(SELECT MAX(price) FROM printer)
+
+
