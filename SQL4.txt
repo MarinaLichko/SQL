@@ -1,0 +1,67 @@
+Задание 21:
+Найдите максимальную цену ПК, выпускаемых каждым производителем, у которого есть модели в таблице PC.
+Вывести: maker, максимальная цена.
+Решение:
+SELECT maker, MAX(price)
+FROM pc JOIN product ON product.model=pc.model
+GROUP BY maker
+
+Задание 22:
+Для каждого значения скорости ПК, превышающего 600 МГц, определите среднюю цену ПК с такой же скоростью. 
+Вывести: speed, средняя цена.
+Решение:
+SELECT speed, AVG(price) 
+FROM pc
+WHERE speed>600
+GROUP BY speed
+
+Задание 23:
+Найдите производителей, которые производили бы как ПК
+со скоростью не менее 750 МГц, так и ПК-блокноты со скоростью не менее 750 МГц.
+Вывести: Maker
+Решение:
+SELECT DISTINCT maker
+FROM product JOIN pc ON product.model=pc.model
+WHERE speed>=750 AND maker IN
+(SELECT maker
+FROM product JOIN laptop ON product.model=laptop.model
+WHERE speed>=750)
+
+Задание 24:
+Перечислите номера моделей любых типов, имеющих самую высокую цену по всей имеющейся в базе данных продукции.
+Решение:
+WITH max_price_all_types AS
+(SELECT model, price
+FROM PC
+UNION
+SELECT model, price
+FROM Laptop
+UNION
+SELECT model, price
+FROM Printer)
+SELECT model FROM max_price_all_types 
+WHERE price=(SELECT MAX(price) FROM max_price_all_types)
+
+Задание 25:
+Найдите производителей принтеров, которые производят ПК с наименьшим объемом RAM и с самым быстрым процессором 
+среди всех ПК, имеющих наименьший объем RAM. Вывести: Maker
+Решение:
+SELECT DISTINCT maker
+FROM product
+WHERE model IN 
+(SELECT model
+FROM pc
+WHERE ram=
+(SELECT MIN(ram)
+FROM pc)
+AND speed=
+(SELECT MAX(speed)
+FROM pc
+WHERE ram=
+(SELECT MIN(ram)
+FROM pc)))
+AND
+maker IN 
+(SELECT maker
+FROM product
+WHERE type='printer')
